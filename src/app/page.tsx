@@ -1,32 +1,11 @@
-'use client';
-
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Size } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 
-type Color = {
-  name: string;
-  hex: string;
-};
-
-type Product = {
-  id: string;
-  name: string;
-  slug: string;
-  imageUrl: string;
-  price: number;
-  colors: Color[];
-  sizes: Size[];
-};
-
-export default function HomePage() {
-  const [products, setProducts] = useState<Product[]>([]);
-
-  useEffect(() => {
-    fetch('/api/products')
-      .then(res => res.json())
-      .then(data => setProducts(data));
-  }, []);
+export default async function HomePage() {
+  const products = await prisma.product.findMany({
+    include: { colors: true, sizes: true },
+    orderBy: { createdAt: 'desc',},
+  });
 
   return (
     <main className="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
@@ -54,12 +33,12 @@ export default function HomePage() {
             ))}
           </div>
           <div className="flex flex-wrap gap-2 mt-2">
-          {product.sizes.map(size => (
-            <span key={size.name} className="text-sm bg-gray-200 px-2 py-1 rounded">
-              {size.name}
-            </span>
-          ))}
-        </div>
+            {product.sizes.map(size => (
+              <span key={size.name} className="text-sm bg-gray-200 px-2 py-1 rounded">
+                {size.name}
+              </span>
+            ))}
+          </div>
         </Link>
       ))}
     </main>
