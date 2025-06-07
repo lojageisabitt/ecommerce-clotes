@@ -1,15 +1,34 @@
+// src/app/api/products/route.ts
 import { PrismaClient } from '@prisma/client'
 import { NextResponse } from 'next/server'
 
 const prisma = new PrismaClient()
 
-// POST: Cadastrar produto com cores
+type ColorInput = {
+  name: string
+  hex: string
+}
+
+type SizeInput = {
+  name: string
+}
+
+type CreateProductRequest = {
+  name: string
+  slug: string
+  price: number
+  imageUrl: string
+  description: string
+  colors?: ColorInput[]
+  sizes?: SizeInput[]
+}
+
 export async function POST(req: Request) {
-  const body = await req.json();
-  const { name, slug, price, imageUrl, description, colors, sizes } = body;
+  const body = (await req.json()) as CreateProductRequest
+  const { name, slug, price, imageUrl, description, colors, sizes } = body
 
   if (!name || !slug || !price || !imageUrl || !description) {
-    return NextResponse.json({ message: 'Dados incompletos' }, { status: 400 });
+    return NextResponse.json({ message: 'Dados incompletos' }, { status: 400 })
   }
 
   try {
@@ -21,13 +40,13 @@ export async function POST(req: Request) {
         imageUrl,
         description,
         colors: {
-          create: colors?.map((color: any) => ({
+          create: colors?.map((color) => ({
             name: color.name,
             hex: color.hex,
           })),
         },
         sizes: {
-          create: sizes?.map((size: any) => ({
+          create: sizes?.map((size) => ({
             name: size.name,
           })),
         },
@@ -36,16 +55,15 @@ export async function POST(req: Request) {
         colors: true,
         sizes: true,
       },
-    });
+    })
 
-    return NextResponse.json(product);
+    return NextResponse.json(product)
   } catch (error) {
-    console.error('Erro ao criar produto:', error);
-    return NextResponse.json({ message: 'Erro interno' }, { status: 500 });
+    console.error('Erro ao criar produto:', error)
+    return NextResponse.json({ message: 'Erro interno' }, { status: 500 })
   }
 }
 
-// GET: Listar todos os produtos com cores
 export async function GET() {
   try {
     const products = await prisma.product.findMany({

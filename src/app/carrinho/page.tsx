@@ -1,6 +1,7 @@
 'use client';
 
 import { useCart } from '@/context/CartContext';
+import Image from 'next/image';
 import Link from 'next/link';
 
 export default function CarrinhoPage() {
@@ -26,7 +27,7 @@ export default function CarrinhoPage() {
             key={`${item.productId}-${item.color.hex}-${item.size.name}`}
             className="flex items-center gap-4 border-b pb-4"
           >
-            <img
+            <Image
               src={item.imageUrl}
               alt={item.name}
               className="w-20 h-20 object-cover rounded"
