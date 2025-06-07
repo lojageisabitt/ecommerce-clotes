@@ -1,11 +1,26 @@
+// src/app/produto/[slug]/page.tsx
 
 import Link from 'next/link'
 import ProductDetailClient, { ProductDetailClientProps } from '@/components/ProductDetailClient'
-import prisma from '@/lib/prisma';
+import prisma from '@/lib/prisma'
 
+type ProdutoPageProps = {
+  params: Promise<{ slug: string }>
+}
 
-export default async function ProdutoPage({ params }: { params: { slug: string } }) {
-  const { slug } = params;
+type ProductWithRelations = {
+  id: string
+  name: string
+  slug: string
+  imageUrl: string
+  description: string
+  price: number
+  colors: { id: string; name: string; hex: string }[]
+  sizes: { id: string; name: string }[]
+}
+
+export default async function ProdutoPage({ params }: ProdutoPageProps) {
+  const { slug } = await params
 
   const product = await prisma.product.findUnique({
     where: { slug },
@@ -16,20 +31,21 @@ export default async function ProdutoPage({ params }: { params: { slug: string }
     return <div className="p-4 text-red-600">Produto não encontrado.</div>
   }
 
+  const typedProduct = product as ProductWithRelations
 
   const productForClient: ProductDetailClientProps = {
-    id: product.id,
-    name: product.name,
-    slug: product.slug,
-    imageUrl: product.imageUrl,
-    description: product.description,
-    price: product.price,
-    colors: product.colors.map((c) => ({
+    id: typedProduct.id,
+    name: typedProduct.name,
+    slug: typedProduct.slug,
+    imageUrl: typedProduct.imageUrl,
+    description: typedProduct.description,
+    price: typedProduct.price,
+    colors: typedProduct.colors.map((c) => ({
       id: c.id,
       name: c.name,
       hex: c.hex,
     })),
-    sizes: product.sizes.map((s) => ({
+    sizes: typedProduct.sizes.map((s) => ({
       id: s.id,
       name: s.name,
     })),

@@ -1,21 +1,38 @@
+// src/app/page.tsx
 import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
+import Image from 'next/image';
+
+type ProductWithRelations = {
+  id: string;
+  name: string;
+  slug: string;
+  imageUrl: string;
+  description: string;
+  price: number;
+  colors: { id: string; name: string; hex: string }[];
+  sizes: { id: string; name: string }[];
+};
+
+async function getProducts() {
+  return prisma.product.findMany({
+    include: { colors: true, sizes: true },
+    orderBy: { createdAt: 'desc' },
+  });
+}
 
 export default async function HomePage() {
-  const products = await prisma.product.findMany({
-    include: { colors: true, sizes: true },
-    orderBy: { createdAt: 'desc',},
-  });
+  const products = await getProducts();
 
   return (
     <main className="p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-      {products.map(product => (
+      {products.map((product: ProductWithRelations) => (
         <Link
           key={product.id}
           href={`/produto/${product.slug}`}
           className="border rounded-xl p-4 shadow-md hover:shadow-lg transition duration-200 cursor-pointer"
         >
-          <img
+          <Image
             src={product.imageUrl}
             alt={product.name}
             className="w-full h-100 object-cover rounded"
