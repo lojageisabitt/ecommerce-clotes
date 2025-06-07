@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
 import { useCart } from '@/context/CartContext'
 
 export type Color = { id: string; name: string; hex: string }
@@ -26,7 +25,6 @@ export default function ProductDetailClient({ product }: { product: ProductDetai
   const [selectedSize, setSelectedSize] = useState<Size | null>(null)
 
   const { addItem } = useCart()
-  const router = useRouter()
 
  const [message, setMessage] = useState<string | null>(null)
 
