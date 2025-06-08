@@ -30,6 +30,8 @@ export default function CarrinhoPage() {
             <Image
               src={item.imageUrl}
               alt={item.name}
+              width={600}
+              height={600}
               className="w-20 h-20 object-cover rounded"
             />
             <div className="flex-1">

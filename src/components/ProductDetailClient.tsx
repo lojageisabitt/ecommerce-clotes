@@ -1,7 +1,8 @@
 'use client'
-
+import { toast } from 'react-hot-toast'
 import { useState } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { useCart } from '@/context/CartContext'
 
 export type Color = { id: string; name: string; hex: string }
@@ -26,11 +27,9 @@ export default function ProductDetailClient({ product }: { product: ProductDetai
 
   const { addItem } = useCart()
 
- const [message, setMessage] = useState<string | null>(null)
-
 const handleAddToCart = () => {
   if (!selectedColor || !selectedSize) {
-    alert('Selecione cor e tamanho antes de adicionar ao carrinho.')
+    toast.error('Selecione cor e tamanho antes de adicionar ao carrinho.')
     return
   }
 
@@ -45,9 +44,27 @@ const handleAddToCart = () => {
     quantity: 1,
   })
 
-  setMessage('Item adicionado ao carrinho!')
-
-  setTimeout(() => setMessage(null), 3000)
+  toast.custom((t) => (
+    <div
+      className={`max-w-sm w-full bg-white shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5 p-4 flex justify-between items-center gap-4 ${
+        t.visible ? 'animate-enter' : 'animate-leave'
+      }`}
+    >
+      <div className="flex-1">
+        <p className="text-sm font-semibold text-gray-900">Produto adicionado!</p>
+        <p className="text-sm text-gray-500">Você pode continuar comprando ou ver o carrinho.</p>
+      </div>
+      <Link
+        href="/carrinho"
+        className="text-purple-700 font-medium hover:underline text-sm"
+        onClick={() => toast.dismiss(t.id)}
+      >
+        Ver carrinho
+      </Link>
+    </div>
+  ), {
+    duration: 5000,
+  })
 }
 
   return (
@@ -57,9 +74,9 @@ const handleAddToCart = () => {
         <Image
           src={imageUrl}
           alt={name}
-          width={600}
-          height={600}
-          className="w-full h-auto object-cover rounded-xl"
+          width={300}
+          height={300}
+          className="w-full h-full object-cover rounded-xl"
         />
       </div>
 
@@ -113,12 +130,6 @@ const handleAddToCart = () => {
           ))}
         </div>
       </div>
-      {/* Mensagem de sucesso */}
-      {message && (
-        <div className="p-2 bg-green-100 text-green-800 rounded-md text-center">
-          {message}
-        </div>
-      )}
       {/* Botão adicionar ao carrinho */}
       <button
         onClick={handleAddToCart}
