@@ -35,6 +35,8 @@ export default async function HomePage() {
           <Image
             src={product.imageUrl}
             alt={product.name}
+            width={600}
+            height={600}
             className="w-full h-100 object-cover rounded"
           />
           <h2 className="text-xl font-semibold mt-2">{product.name}</h2>
