@@ -52,12 +52,12 @@ export default async function ProdutoPage({ params }: ProdutoPageProps) {
   }
 
   return (
-    <main className="max-w-4xl mx-auto p-6">
+    <main className="w-full mx-auto p-6">
       <Link href="/" className="text-purple-700 hover:underline">
         ← Voltar
       </Link>
 
-      <div className="grid md:grid-cols-2 gap-6 mt-4">
+      <div className="gap-6 mt-4">
         <ProductDetailClient product={productForClient} />
       </div>
     </main>
