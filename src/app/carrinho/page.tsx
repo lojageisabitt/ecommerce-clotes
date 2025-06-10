@@ -1,3 +1,4 @@
+//src/app/carrinho/page.tsx
 'use client';
 
 import { useCart } from '@/context/CartContext';
