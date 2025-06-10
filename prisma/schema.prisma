@@ -48,6 +48,7 @@ model Order {
   cpf        String
   phone      String
   address    Json
+  frete      Float?
   total      Float
   statusPagamento String?
   createdAt  DateTime    @default(now())
