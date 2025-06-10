@@ -2,6 +2,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
+export async function GET() {
+  return NextResponse.json({ status: 'ok' })
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
@@ -13,7 +17,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ status: 'ignored' })
     }
 
-    // Buscar detalhes do pagamento no Mercado Pago
+    // Busca o pagamento via API oficial
     const mpRes = await fetch(`https://api.mercadopago.com/v1/payments/${paymentId}`, {
       headers: {
         Authorization: `Bearer ${process.env.MERCADO_PAGO_ACCESS_TOKEN}`,
@@ -21,11 +25,14 @@ export async function POST(req: NextRequest) {
     })
 
     const payment = await mpRes.json()
+    const orderId = payment?.external_reference
+    const status = payment?.status // approved, pending, rejected
 
-    const orderId = payment.external_reference
-    const status = payment.status // approved, pending, rejected...
+    if (!orderId || !status) {
+      return NextResponse.json({ error: 'Pagamento inválido' }, { status: 400 })
+    }
 
-    // Atualiza o status do pedido no banco de dados
+    // Atualiza o status do pedido no banco
     await prisma.order.update({
       where: { id: orderId },
       data: { statusPagamento: status },
@@ -33,7 +40,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true })
   } catch (err) {
-    console.error('Erro no webhook:', err)
-    return NextResponse.json({ error: 'Erro no Webhook' }, { status: 500 })
+    console.error('Erro no webhook Mercado Pago:', err)
+    return NextResponse.json({ error: 'Erro interno no webhook' }, { status: 500 })
   }
 }
