@@ -3,6 +3,8 @@ import { checkoutSchema } from '@/lib/validators/checkoutSchema'
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 
+import { ValidationError } from 'yup'
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
@@ -13,20 +15,20 @@ export async function POST(req: NextRequest) {
     }
 
     interface Item {
-      productId: string;
-      name: string;
-      quantity: number;
-      price: number;
-      size: { name: string };
-      color: { name: string };
+      productId: string
+      name: string
+      quantity: number
+      price: number
+      size: { name: string }
+      color: { name: string }
     }
 
-    let validatedData: typeof checkoutSchema.__outputType;
+    let validatedData: typeof checkoutSchema.__outputType
     try {
       validatedData = await checkoutSchema.validate(customerData, { abortEarly: false })
-    } catch (validationError: unknown) {
-      if (validationError && typeof validationError === 'object' && 'errors' in validationError) {
-        return NextResponse.json({ error: (validationError as any).errors }, { status: 400 })
+    } catch (validationError) {
+      if (validationError instanceof ValidationError) {
+        return NextResponse.json({ error: validationError.errors }, { status: 400 })
       }
       return NextResponse.json({ error: 'Erro de validação desconhecido.' }, { status: 400 })
     }
@@ -34,6 +36,7 @@ export async function POST(req: NextRequest) {
     const total = items.reduce((acc: number, item: Item) => {
       return acc + item.price * item.quantity
     }, 0)
+
     const order = await prisma.order.create({
       data: {
         ...validatedData,

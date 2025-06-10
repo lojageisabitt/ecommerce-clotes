@@ -2,14 +2,14 @@
 import { prisma } from '@/lib/prisma'
 import { notFound } from 'next/navigation'
 
-interface Props {
-  params: { id: string }
-  searchParams: { status?: string }
+interface PedidoPageProps {
+  params: Promise<{ id: string }>
+  searchParams?: Promise<{ status?: string }>
 }
 
-export default async function PedidoPage({ params, searchParams }: Props) {
-  const { id } = params
-  const statusQuery = searchParams.status
+export default async function PedidoPage({ params, searchParams }: PedidoPageProps) {
+  const { id } = await params
+  const statusQuery = (await searchParams)?.status
 
   const order = await prisma.order.findUnique({
     where: { id },
