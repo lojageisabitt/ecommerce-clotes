@@ -1,0 +1,48 @@
+// src/app/api/orders/route.ts
+import { checkoutSchema } from '@/lib/validators/checkoutSchema'
+import { NextRequest, NextResponse } from 'next/server'
+import { prisma } from '@/lib/prisma'
+
+export async function POST(req: NextRequest) {
+  try {
+    const body = await req.json()
+    const { items, ...customerData } = body
+
+    if (!items || items.length === 0) {
+      return NextResponse.json({ error: 'Carrinho vazio.' }, { status: 400 })
+    }
+
+    let validatedData;
+    try {
+      validatedData = await checkoutSchema.validate(customerData, { abortEarly: false })
+    } catch (validationError: any) {
+      return NextResponse.json({ error: validationError.errors }, { status: 400 })
+    }
+
+    const total = items.reduce((acc: number, item: any) => {
+      return acc + item.price * item.quantity
+    }, 0)
+    const order = await prisma.order.create({
+      data: {
+        ...validatedData,
+        total,
+        address: validatedData.address,
+        items: {
+          create: items.map((item: any) => ({
+            productId: item.productId,
+            name: item.name,
+            quantity: item.quantity,
+            price: item.price,
+            size: item.size.name,
+            color: item.color.name,
+          })),
+        },
+      },
+    })
+
+    return NextResponse.json({ success: true, orderId: order.id })
+  } catch (error) {
+    console.error(error)
+    return NextResponse.json({ error: 'Erro ao criar pedido.' }, { status: 500 })
+  }
+}

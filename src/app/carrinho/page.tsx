@@ -64,16 +64,13 @@ export default function CarrinhoPage() {
       </div>
 
       <div className="mt-8 text-right">
-        <p className="text-xl font-semibold">Total: R$ {totalPrice.toFixed(2)}</p>
-        <button
-          onClick={() => {
-            // stub para checkout; futuramente redireciona para /checkout
-            alert('Implementar fluxo de checkout');
-          }}
-          className="mt-4 bg-purple-700 text-white px-6 py-3 rounded-md hover:bg-purple-800 transition"
+        <p className="mb-8 text-xl font-semibold">Total: R$ {totalPrice.toFixed(2)}</p>
+        <Link
+          href="/checkout"
+          className="mt-8 bg-purple-700 text-white px-6 py-3 rounded-md hover:bg-purple-800 transition"
         >
           Finalizar Compra
-        </button>
+        </Link>
       </div>
 
       <div className="mt-6 text-center">
