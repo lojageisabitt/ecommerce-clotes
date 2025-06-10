@@ -9,14 +9,22 @@ interface PedidoPageProps {
 
 export default async function PedidoPage({ params, searchParams }: PedidoPageProps) {
   const { id } = await params
-  const statusQuery = (await searchParams)?.status
+const statusQuery = (await searchParams)?.status
 
-  const order = await prisma.order.findUnique({
+let order = await prisma.order.findUnique({
+  where: { id },
+  include: { items: true },
+})
+
+if (!order) return notFound()
+
+if (statusQuery === 'approved' && order.statusPagamento !== 'approved') {
+  await prisma.order.update({
     where: { id },
-    include: { items: true },
+    data: { statusPagamento: 'approved' },
   })
-
-  if (!order) return notFound()
+  order = { ...order, statusPagamento: 'approved' }
+}
 
   const statusText = {
     approved: 'Pagamento aprovado!',
