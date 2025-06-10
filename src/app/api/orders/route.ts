@@ -12,14 +12,26 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Carrinho vazio.' }, { status: 400 })
     }
 
-    let validatedData;
-    try {
-      validatedData = await checkoutSchema.validate(customerData, { abortEarly: false })
-    } catch (validationError: any) {
-      return NextResponse.json({ error: validationError.errors }, { status: 400 })
+    interface Item {
+      productId: string;
+      name: string;
+      quantity: number;
+      price: number;
+      size: { name: string };
+      color: { name: string };
     }
 
-    const total = items.reduce((acc: number, item: any) => {
+    let validatedData: typeof checkoutSchema.__outputType;
+    try {
+      validatedData = await checkoutSchema.validate(customerData, { abortEarly: false })
+    } catch (validationError: unknown) {
+      if (validationError && typeof validationError === 'object' && 'errors' in validationError) {
+        return NextResponse.json({ error: (validationError as any).errors }, { status: 400 })
+      }
+      return NextResponse.json({ error: 'Erro de validação desconhecido.' }, { status: 400 })
+    }
+
+    const total = items.reduce((acc: number, item: Item) => {
       return acc + item.price * item.quantity
     }, 0)
     const order = await prisma.order.create({
@@ -28,7 +40,7 @@ export async function POST(req: NextRequest) {
         total,
         address: validatedData.address,
         items: {
-          create: items.map((item: any) => ({
+          create: items.map((item: Item) => ({
             productId: item.productId,
             name: item.name,
             quantity: item.quantity,
