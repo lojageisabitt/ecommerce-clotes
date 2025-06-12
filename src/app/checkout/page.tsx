@@ -39,10 +39,10 @@ export default function CheckoutPage() {
                 </span>
               </div>
             ))}
-            <div className="border-t pt-4 mt-4 flex justify-between font-bold">
+            {/* <div className="border-t pt-4 mt-4 flex justify-between font-bold">
               <span>Total:</span>
               <span>R$ {totalPrice.toFixed(2)}</span>
-            </div>
+            </div> */}
           </div>
         </div>
       )}
