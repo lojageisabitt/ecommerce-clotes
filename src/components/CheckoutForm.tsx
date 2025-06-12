@@ -31,22 +31,18 @@ export default function CheckoutForm() {
     const calcularFrete = async () => {
       if (!zipCode || zipCode.length < 8 || items.length === 0) return
 
-      const pesoTotal = items.reduce((acc, item) => acc + item.quantity * 0.3, 0) // 300g por peça
+      const quantidade = items.reduce((acc, item) => acc + item.quantity, 0)
 
       try {
         const res = await fetch('/api/frete', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            cepDestino: zipCode,
-            pesoTotal,
-          }),
+          body: JSON.stringify({ cepDestino: zipCode, quantidade }),
         })
 
         const data = await res.json()
-
         if (Array.isArray(data) && data.length > 0) {
-          const melhor = data[0] // primeiro resultado como melhor
+          const melhor = data[0]
           setFrete(Number(melhor.price))
         } else {
           setFrete(null)
@@ -72,6 +68,7 @@ export default function CheckoutForm() {
     }
 
     try {
+      // Criação do pedido
       const res = await fetch('/api/orders', {
         method: 'POST',
         body: JSON.stringify({ ...data, items, frete }),
@@ -85,9 +82,24 @@ export default function CheckoutForm() {
 
       const { orderId } = await res.json()
 
+      // Itens formatados para Mercado Pago
+      const formattedItems = [
+        ...items.map((item) => ({
+          name: item.name,
+          quantity: item.quantity,
+          price: item.price,
+        })),
+        {
+          name: 'Frete',
+          quantity: 1,
+          price: frete,
+        },
+      ]
+
+      // Criação da preferência do Mercado Pago
       const prefRes = await fetch('/api/mercado-pago/preference', {
         method: 'POST',
-        body: JSON.stringify({ items, orderId, frete }),
+        body: JSON.stringify({ items: formattedItems, orderId }),
         headers: { 'Content-Type': 'application/json' },
       })
 

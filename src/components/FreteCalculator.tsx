@@ -12,10 +12,10 @@ type FreteOption = {
 }
 
 type Props = {
-  pesoTotalKg: number
+  quantidade: number // Alterado de pesoTotalKg para quantidade
 }
 
-export default function FreteCalculator({ pesoTotalKg }: Props) {
+export default function FreteCalculator({ quantidade }: Props) {
   const [cep, setCep] = useState('')
   const [loading, setLoading] = useState(false)
   const [fretes, setFretes] = useState<FreteOption[] | null>(null)
@@ -35,7 +35,7 @@ export default function FreteCalculator({ pesoTotalKg }: Props) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           cepDestino: cep,
-          pesoTotal: pesoTotalKg,
+          quantidade, // Passa a quantidade em vez do peso
         }),
       })
 
