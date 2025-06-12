@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
 import Image from 'next/image';
+import CategoriasMenu from '@/components/CategoriasMenu';
 
 type ProductWithRelations = {
   id: string;
@@ -26,6 +27,7 @@ export default async function HomePage() {
 
   return (
     <main>
+      <CategoriasMenu />
     <section className="bg-white py-12 text-center px-4">
     <p className="text-lg mb-2">Estilo que combina com você</p>
     <h1 className="text-4xl font-bold mb-4">Soluções personalizadas para eventos e empresas.</h1>
