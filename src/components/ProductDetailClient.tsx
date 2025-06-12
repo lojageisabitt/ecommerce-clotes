@@ -86,7 +86,7 @@ export default function ProductDetailClient({ product }: { product: ProductDetai
     <div className="flex-1 space-y-6">
       <h1 className="text-3xl font-bold">{name}</h1>
 
-      <FreteCalculator pesoTotalKg={0.3} />
+      <FreteCalculator quantidade={1} />
 
       <p className="text-lg text-gray-700">{description}</p>
 

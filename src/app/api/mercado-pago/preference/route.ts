@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
         title: item.name,
         quantity: item.quantity,
         currency_id: 'BRL',
-        unit_price: item.price,
+        unit_price: Number(item.price),
       })),
       back_urls: {
         success: `${process.env.NEXT_PUBLIC_SITE_URL}/pedido/${orderId}?status=success`,
@@ -44,9 +44,8 @@ export async function POST(req: NextRequest) {
     const mpResponse = await preferenceClient.create({
       body: preferencePayload,
     });
-    const initPoint = mpResponse.init_point;
 
-    return NextResponse.json({ init_point: initPoint });
+    return NextResponse.json({ init_point: mpResponse.init_point });
   } catch (error) {
     console.error('Erro ao criar preferência:', error);
     return NextResponse.json(
