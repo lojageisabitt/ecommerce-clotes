@@ -6,11 +6,9 @@ import { WhatsAppButton } from './WhatsAppButton'
 
 
 export default function Footer() {
-
-
   return (
     <footer className="w-full shadow-md">
-      <div className="flex flex-col md:flex-row justify-center items-center py-20 gap-10">
+      <div className="flex md:justify-center justify-around items-center py-20 md:gap-10">
         <div className="items-center flex flex-col">
             <Image src={'/assets/cartoes-de-credito-1.png'} alt={'Aceitamos Cartões'} width={100} height={100}/>
             <h4 className="font-bold text-center">Aceitamos Cartões</h4>

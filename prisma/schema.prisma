@@ -24,6 +24,8 @@ model Product {
   createdAt   DateTime       @default(now())
   colors      ProductColor[]
   sizes       Size[] 
+  categoryId  String         @default("todos")
+  category    Category       @relation(fields: [categoryId], references: [id])
 }
 
 model ProductColor {
@@ -65,4 +67,11 @@ model OrderItem {
   price      Float
   size       String
   color      String
+}
+
+model Category {
+  id    String   @id @default(cuid())
+  name  String   @unique
+  slug  String   @unique
+  products Product[]
 }
