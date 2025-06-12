@@ -1,6 +1,14 @@
 // src/app/api/frete/route.ts
 import { NextResponse } from 'next/server'
 
+interface FreteService {
+  id: string
+  name: string
+  price: number
+  delivery_time: number
+  error?: string
+}
+
 export async function POST(request: Request) {
   const { cepDestino, quantidade } = await request.json()
 
@@ -24,20 +32,20 @@ export async function POST(request: Request) {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${process.env.MELHOR_ENVIO_TOKEN}`,
-        'User-Agent': 'Ecommerce-Clotes ageisislane@gmail.com', // Substitua pelo seu e-mail
+        'User-Agent': 'Ecommerce-Clotes ageisislane@gmail.com',
       },
       body: JSON.stringify({
-        from: { postal_code: '25935506' }, // CEP de origem da sua loja
+        from: { postal_code: '25935506' },
         to: { postal_code: cepDestino },
         products: [
           {
             id: '1',
-            quantity: 1, // Pacote único
-            weight: pesoTotal, // Em kg
-            width: largura, // Em cm
-            height: alturaTotal, // Em cm
-            length: comprimento, // Em cm
-            insurance_value: 100, // Valor declarado (ajuste conforme necessário)
+            quantity: 1,
+            weight: pesoTotal,
+            width: largura,
+            height: alturaTotal,
+            length: comprimento,
+            insurance_value: 100,
           },
         ],
       }),
@@ -49,10 +57,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Erro ao calcular frete. Verifique o CEP.' }, { status: 400 })
     }
 
-    // Filtra serviços válidos e formata a resposta
-    const options = data
-      .filter((service: any) => !service.error)
-      .map((service: any) => ({
+    const options = (data as FreteService[])
+      .filter((service) => !service.error)
+      .map((service) => ({
         id: service.id,
         name: service.name,
         price: service.price.toString(),

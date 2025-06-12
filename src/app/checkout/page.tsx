@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { useCart } from '@/context/CartContext'
 
 export default function CheckoutPage() {
-  const { items, totalPrice } = useCart()
+  const { items } = useCart()
 
   return (
     <main className="max-w-5xl mx-auto p-6">
@@ -39,10 +39,6 @@ export default function CheckoutPage() {
                 </span>
               </div>
             ))}
-            {/* <div className="border-t pt-4 mt-4 flex justify-between font-bold">
-              <span>Total:</span>
-              <span>R$ {totalPrice.toFixed(2)}</span>
-            </div> */}
           </div>
         </div>
       )}
