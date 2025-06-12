@@ -12,7 +12,7 @@ export default function CarrinhoPage() {
     return (
       <main className="p-6 text-center">
         <h2 className="text-2xl font-semibold mb-4">Seu carrinho está vazio</h2>
-        <Link href="/" className="text-purple-700 hover:underline">
+        <Link href="/" className="text-green-700 hover:underline">
           Voltar à loja
         </Link>
       </main>
@@ -47,7 +47,7 @@ export default function CarrinhoPage() {
                 />
               </p>
               <p className="text-sm text-gray-600">Tamanho: {item.size.name}</p>
-              <p className="mt-1 text-purple-700 font-bold">R$ {(item.price * item.quantity).toFixed(2)}</p>
+              <p className="mt-1 text-green-700 font-bold">R$ {(item.price * item.quantity).toFixed(2)}</p>
             </div>
             <div className="flex flex-col items-end gap-2">
               <p className="text-sm">Qtd: {item.quantity}</p>
@@ -68,7 +68,7 @@ export default function CarrinhoPage() {
         <p className="mb-8 text-xl font-semibold">Total: R$ {totalPrice.toFixed(2)}</p>
         <Link
           href="/checkout"
-          className="mt-8 bg-purple-700 text-white px-6 py-3 rounded-md hover:bg-purple-800 transition"
+          className="mt-8 bg-green-700 text-white px-6 py-3 rounded-md hover:bg-green-800 transition"
         >
           Finalizar Compra
         </Link>

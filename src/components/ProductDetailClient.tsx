@@ -57,7 +57,7 @@ export default function ProductDetailClient({ product }: { product: ProductDetai
         </div>
         <Link
           href="/carrinho"
-          className="text-purple-700 font-medium hover:underline text-sm"
+          className="text-green-700 font-medium hover:underline text-sm"
           onClick={() => toast.dismiss(t.id)}
         >
           Ver carrinho
@@ -90,7 +90,7 @@ export default function ProductDetailClient({ product }: { product: ProductDetai
 
       <p className="text-lg text-gray-700">{description}</p>
 
-      <p className="text-2xl text-purple-700 font-bold">
+      <p className="text-2xl text-green-700 font-bold">
         R$ {price.toFixed(2)}
       </p>
 
@@ -105,7 +105,7 @@ export default function ProductDetailClient({ product }: { product: ProductDetai
               title={color.name}
               className={`w-8 h-8 rounded-full border-2 transition ${
                 selectedColor?.id === color.id
-                  ? 'ring-2 ring-purple-600'
+                  ? 'ring-2 ring-green-600 border-green-600 '
                   : 'hover:border-gray-500'
               }`}
               style={{ backgroundColor: color.hex }}
@@ -125,7 +125,7 @@ export default function ProductDetailClient({ product }: { product: ProductDetai
               type="button"
               className={`px-3 py-1 border rounded-md transition ${
                 selectedSize?.id === size.id
-                  ? 'bg-purple-600 text-white'
+                  ? 'bg-[#000020] text-white'
                   : 'hover:bg-gray-200'
               }`}
               onClick={() => setSelectedSize(size)}
@@ -140,7 +140,7 @@ export default function ProductDetailClient({ product }: { product: ProductDetai
       <button
         onClick={handleAddToCart}
         type="button"
-        className="w-full bg-purple-700 text-white py-3 rounded-md hover:bg-purple-800 transition"
+        className="w-full bg-green-700 text-white py-3 rounded-md hover:bg-green-800 transition"
       >
         Adicionar ao Carrinho
       </button>
