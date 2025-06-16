@@ -2,7 +2,6 @@
 import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
 import Image from 'next/image';
-import CategoriasMenu from '@/components/CategoriasMenu';
 
 type ProductWithRelations = {
   id: string;
@@ -26,16 +25,8 @@ export default async function HomePage() {
   const products = await getProducts();
 
   return (
-    <main>
-      <CategoriasMenu />
-    <section className="bg-white py-12 text-center px-4">
-    <p className="text-lg mb-2">Estilo que combina com você</p>
-    <h1 className="text-4xl font-bold mb-4">Soluções personalizadas para eventos e empresas.</h1>
-    <a href="https://wa.me/5521986369426" className="inline-block px-6 py-3 bg-green-600 text-white rounded-xl hover:bg-green-800 transition">
-      Entre em contato
-    </a>
-  </section>
-      <section className="p-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+    <main>      
+      <section className="p-20 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
       {products.map((product: ProductWithRelations) => (
         <Link
           key={product.id}
@@ -55,6 +46,13 @@ export default async function HomePage() {
         </Link>
       ))}
       </section>
+          <section className="bg-[#000020] text-white py-40 text-center px-4">
+    <p className="text-lg mb-2">Estilo que combina com você</p>
+    <h1 className="text-4xl font-bold mb-4">Soluções personalizadas para eventos e empresas.</h1>
+    <a href="https://wa.me/5521986369426" className="inline-block px-6 py-3 bg-green-600 text-white rounded-xl hover:bg-green-800 transition">
+      Entre em contato
+    </a>
+  </section>
     </main>
   );
 }

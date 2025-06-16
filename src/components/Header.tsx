@@ -10,10 +10,10 @@ export default function Header() {
 
   return (
     <header className="w-full bg-[#000020] shadow-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 lg:px-8 h-16 flex items-center justify-between">
         {/* Logo (esquerda) */}
         <Link href="/" className="flex items-center">
-          <Image className="p-8" src="/assets/LOGO-LOJA-DE-ROUPAS-C-M-TEIXEIRAS.png" alt="Logo LOJA DE ROUPAS C.M.TEIXEIRAS" width={293} height={56} />
+          <Image className="py-8 max-w-[180px] md:max-w-[250px]" src="/assets/LOGO-LOJA-DE-ROUPAS-C-M-TEIXEIRAS.png" alt="Logo LOJA DE ROUPAS C.M.TEIXEIRAS" width={293} height={56} />
           {/* <span className="text-2xl font-bold text-purple-700">Loja Roupas</span> */}
         </Link>
 

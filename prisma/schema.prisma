@@ -25,7 +25,7 @@ model Product {
   colors      ProductColor[]
   sizes       Size[] 
   categoryId  String         @default("todos")
-  category    Category       @relation(fields: [categoryId], references: [id])
+  categories  Category[] @relation("ProductCategories")
 }
 
 model ProductColor {
@@ -73,5 +73,5 @@ model Category {
   id    String   @id @default(cuid())
   name  String   @unique
   slug  String   @unique
-  products Product[]
+  products Product[] @relation("ProductCategories")
 }
