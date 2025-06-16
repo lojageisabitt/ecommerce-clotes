@@ -74,7 +74,7 @@ export default function FreteCalculator({ quantidade }: Props) {
         />
         <button
           onClick={handleCalculateFrete}
-          className="bg-purple-700 text-white px-4 py-2 rounded hover:bg-purple-800"
+          className="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800"
           disabled={loading}
         >
           {loading ? 'Calculando...' : 'Calcular'}

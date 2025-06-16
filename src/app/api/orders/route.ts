@@ -37,10 +37,14 @@ export async function POST(req: NextRequest) {
       return acc + item.price * item.quantity
     }, 0)
 
+    // Garante que o frete seja salvo na ordem
+    const frete = typeof body.frete === 'number' ? body.frete : 0
+
     const order = await prisma.order.create({
       data: {
         ...validatedData,
         total,
+        frete, // salva o frete
         address: validatedData.address,
         items: {
           create: items.map((item: Item) => ({

@@ -1,30 +1,32 @@
 // src/app/pedido/[id]/page.tsx
 import { prisma } from '@/lib/prisma'
 import { notFound } from 'next/navigation'
+import React from 'react'
+import { PagarNovamenteButton } from '@/components/PagarNovamenteButton'
 
 interface PedidoPageProps {
-  params: Promise<{ id: string }>
+  params:  Promise<{ id: string }>
   searchParams?: Promise<{ status?: string }>
 }
 
 export default async function PedidoPage({ params, searchParams }: PedidoPageProps) {
-  const { id } = await params
+ const { id } = await params
 const statusQuery = (await searchParams)?.status
 
-let order = await prisma.order.findUnique({
-  where: { id },
-  include: { items: true },
-})
-
-if (!order) return notFound()
-
-if (statusQuery === 'approved' && order.statusPagamento !== 'approved') {
-  await prisma.order.update({
+  let order = await prisma.order.findUnique({
     where: { id },
-    data: { statusPagamento: 'approved' },
+    include: { items: true },
   })
-  order = { ...order, statusPagamento: 'approved' }
-}
+
+  if (!order) return notFound()
+
+  if (statusQuery === 'approved' && order.statusPagamento !== 'approved') {
+    await prisma.order.update({
+      where: { id },
+      data: { statusPagamento: 'approved' },
+    })
+    order = { ...order, statusPagamento: 'approved' }
+  }
 
   const statusText = {
     approved: 'Pagamento aprovado!',
@@ -35,6 +37,14 @@ if (statusQuery === 'approved' && order.statusPagamento !== 'approved') {
   }
 
   const displayStatus = order.statusPagamento || statusQuery || 'success'
+  const totalProdutos = order.items?.reduce((acc, item) => acc + item.price * item.quantity, 0) ?? 0
+  const frete = order.frete ?? 0
+  const totalGeral = totalProdutos + frete
+  const itemsForButton = order.items.map((item) => ({
+    name: item.name,
+    quantity: item.quantity,
+    price: item.price,
+  }))
 
   return (
     <main className="max-w-2xl mx-auto py-10 px-4">
@@ -45,6 +55,9 @@ if (statusQuery === 'approved' && order.statusPagamento !== 'approved') {
           {statusText[displayStatus as keyof typeof statusText] || 'Aguardando pagamento...'}
         </p>
         <p className="text-sm text-gray-500 mt-1">Status atual: {order.statusPagamento || 'aguardando'}</p>
+        {displayStatus !== 'approved' && (
+          <PagarNovamenteButton orderId={order.id} items={itemsForButton} frete={frete} />
+        )}
       </div>
 
       <h2 className="text-xl font-semibold mb-2">Itens do pedido:</h2>
@@ -61,7 +74,9 @@ if (statusQuery === 'approved' && order.statusPagamento !== 'approved') {
       </ul>
 
       <div className="mt-6 text-right font-bold text-lg">
-        Total: R$ {order.total.toFixed(2)}
+        Subtotal: R$ {totalProdutos.toFixed(2)}<br />
+        Frete: R$ {frete.toFixed(2)}<br />
+        Total: R$ {totalGeral.toFixed(2)}
       </div>
     </main>
   )
